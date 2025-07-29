@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        WME URComments-Enhanced (beta)
 // @namespace   https://greasyfork.org/users/166843
-// @version     2025.04.23.01
+// @version     2025.07.29.01
 // eslint-disable-next-line max-len
 // @description URComments-Enhanced (URC-E) allows Waze editors to handle WME update requests more quickly and efficiently. Also adds many UR filtering options, ability to change the markers, plus much, much, more!
 // @grant       GM_xmlhttpRequest
@@ -84,7 +84,7 @@
         _BETA_DL_URL = 'YUhSMGNITTZMeTluY21WaGMzbG1iM0pyTG05eVp5OXpZM0pwY0hSekx6TTNOelEyTkMxM2JXVXRkWEpqYjIxdFpXNTBjeTFsYm1oaGJtTmxaQzFpWlhSaEwyTnZaR1V2VjAxRkxWVlNRMjl0YldWdWRITXRSVzVvWVc1alpXUXVkWE5sY2k1cWN3PT0=',
         _ALERT_UPDATE = true,
         _SCRIPT_VERSION = GM_info.script.version.toString(),
-        _SCRIPT_VERSION_CHANGES = ['CHANGE: WME release v2.287-5-g32b915ed8 compatibility.'],
+        _SCRIPT_VERSION_CHANGES = ['CHANGE: WME release v2.305-10-g34435bea76 compatibility.'],
         _MIN_VERSION_AUTOSWITCH = '2019.01.11.01',
         _MIN_VERSION_COMMENTLISTS = '2018.01.01.01',
         _MIN_VERSION_COMMENTS = '2019.03.01.01',
@@ -198,19 +198,22 @@
             /**
              *  2024.11.26
              * Swapped the if and else if so that handleUpdateContainer goes first if it finds that show exists in the same mutation set as the removed item.
+             *  2025.07.29
+             * Changed mutation element checks for both handleUpdateRequestContainer and handleAfterCloseUpdateContainer.
              */
             if (mutations
-                .filter((mutation) => (mutation.type === 'attributes'))
-                .filter((mutation) => (mutation.oldValue?.includes('panel') && mutation.target.classList.contains('show')))
+                .filter((mutation) => (mutation.type === 'childList'))
+                .filter((mutation) => (
+                    (mutation.target === document.getElementById('panel-container'))
+                    && (Array.from(mutation.addedNodes).some((node) => (
+                        (node.firstChild?.nodeName === "WZ-CARD") && (node.firstChild?.classList.contains('mapUpdateRequest')))
+                    ))
+                ))
                 .length > 0
             )
                 handleUpdateRequestContainer();
             else if (_selUr.handling
-                && (mutations
-                    .filter((mutation) => (mutation.removedNodes.length > 0) && mutation.target.matches('#panel-container'))
-                    .filter((removedChild) => removedChild.removedNodes[0].classList.contains('show') && removedChild.removedNodes[0].classList.contains('panel'))
-                    .length > 0
-                )
+                && (document.getElementById('panel-container').children.length === 0)
             )
                 handleAfterCloseUpdateContainer();
         }),
