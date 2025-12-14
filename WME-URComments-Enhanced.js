@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        WME URComments-Enhanced (beta)
+// @name        WME URComments-Enhanced
 // @namespace   https://greasyfork.org/users/166843
 // @version     2025.07.29.01
 // eslint-disable-next-line max-len
@@ -1407,7 +1407,7 @@
                 title = I18n.t('urce.prompts.SelSegsFound');
             else if (this.value.includes('$PLACE_ADDRESS$'))
                 title = I18n.t('urce.prompts.PlaceAddressFound');
-            else if (this.value.inclues('$PLACE_NAME$'))
+            else if (this.value.includes('$PLACE_NAME$'))
                 title = I18n.t('urce.prompts.PlaceNameFound');
             else
                 title = I18n.t('urce.prompts.VarFound').replaceAll('$VARSFOUND$', varsFound.join(', '));
